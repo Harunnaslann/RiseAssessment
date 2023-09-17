@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  sqlserver:
+   environment : 
+    - ACCEPT_EULA=Y
+    - MSSQL_SA_PASSWORD=Password123*
+   volumes:
+    - sqlserver_volume:/var/opt/mssql
+   ports:
+      - "1433:1433"
+  riseassessment.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  riseassessment.web:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5010:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

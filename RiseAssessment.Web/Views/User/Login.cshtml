@@ -1,0 +1,34 @@
+﻿@model UserLoginModel
+@{
+ ViewData["Title"] = "Login";
+ var error = string.Empty;
+ if (ViewBag.Error != null)
+ {
+  error = ViewBag.Error;
+ }
+}
+
+<h2>Login</h2>
+
+<form asp-controller="User" asp-action="Login" method="post">
+ @{
+  if (!string.IsNullOrEmpty(error))
+  {
+   <div class="form-group">
+   <p style="color:red;">@error</p>
+   </div>
+  }
+ }
+ <div class="form-group">
+  <label for="email">Email</label>
+  <input type="email" id="Email" name="email" class="form-control" required>
+ </div>
+ <div class="form-group">
+  <label for="password">Password</label>
+  <input type="password" id="Password" name="password" class="form-control" required>
+ </div>
+ <button type="submit" class="btn btn-primary">Login</button>
+</form>
+<p>Do you not have an account yet? <a href="/User/Register">Register</a></p>
+
+

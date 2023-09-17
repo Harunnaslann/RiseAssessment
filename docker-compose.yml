@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+  riseassessment.api:
+    image: riseassessmentapi-image
+    container_name: riseassessmentapi-container
+    build:
+      context: .
+      dockerfile: RiseAssessment.API/Dockerfile
+  riseassessment.web:
+    image: riseassessmentweb-image
+    container_name: riseassessmentweb-container
+    build:
+      context: .
+      dockerfile: RiseAssessment.Web/Dockerfile
+
+volumes:
+  sqlserver_volume:

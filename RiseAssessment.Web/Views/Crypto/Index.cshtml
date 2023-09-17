@@ -1,0 +1,102 @@
+﻿@{
+ Layout = null;
+}
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+   <div class="input-group mb-3 ml-auto">
+                <select style="width: 100px" class="custom-select" id="Period" name="Period">
+                    <option value="0" selected>Daily</option>
+                    <option value="1">Weekly</option>
+                    <option value="2">Monthly</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" onclick="GetData()" type="button">Get</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<canvas id="myChart"></canvas>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- Bootstrap JS ve jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script type="text/javascript">
+
+ const ctx = document.getElementById('myChart').getContext('2d');
+
+ $(document).ready(function () {
+     GetData();
+ });
+
+ function GetData() {
+     var period = document.getElementsByName("Period")[0].value;
+     $.ajax({
+         type: "GET",
+         url: "/Crypto/ShowCryptoData",
+         data: {
+             'type': 0,
+             period: period
+         },
+         contentType: "application/json; charset=utf-8",
+         dataType: "json",
+         success: OnSuccessResult,
+         error: OnError
+     });
+
+     function OnSuccessResult(data) {
+         var _data = data;
+         var _chartLabels = [];
+         var _chartData = [];
+
+         for (var i = 0; i < _data.length; i++) {
+             var price = _data[i].price;
+             var date = _data[i].createdDate.split('.')[0];
+             _chartLabels.push(date);
+             _chartData.push(price);
+         }
+
+         let chartStatus = Chart.getChart("myChart");
+         if (chartStatus != undefined) {
+             chartStatus.destroy();
+         }
+
+         ctx.height = 200;
+
+         var barColor = new Array(_chartLabels.length).fill("red");
+         var newChart = new Chart(ctx,
+             {
+                 type: 'line',
+                 data: {
+                     labels: _chartLabels,
+                     datasets: [{
+                         backgroundColor: barColor,
+                         data: _chartData
+                     }]
+                 },
+                 options: {
+                     responsive: true,
+                 }
+             });
+     }
+
+     function OnError(err) {
+
+     }
+     setTimeout(GetData, 60000);
+ }
+
+
+
+</script>
