@@ -1,68 +1,74 @@
-﻿using RiseAssessment.API.Access;
+﻿using Microsoft.AspNetCore.Mvc;
+using RiseAssessment.API.Access;
 using RiseAssessment.API.Mappers;
 using RiseAssessment.API.Models.Entity;
 using RiseAssessment.API.Models.ViewModel;
+using RiseAssessment.API.Security;
 using System;
 using System.Text;
 
 namespace RiseAssessment.API.Store
 {
- public class UserStore
- {
-  private readonly UserAccess _userAccess;
-
-  public UserStore(UserAccess userAccess)
+  public class UserStore
   {
-   _userAccess = userAccess;
-  }
+    private readonly UserAccess _userAccess;
 
-  public object Create(UserRegisterViewModel model)
-  {
-   try
-   {
-    var result = _userAccess.Find(model.Email);
-    if (result != null)
+    public UserStore(UserAccess userAccess)
     {
-     return new { success = false, message = "This email has been used before." };
+      _userAccess = userAccess;
     }
 
-    User user = UserMapperExtensions.Map(model);
-    var data = _userAccess.Create(user);
-
-    return new { success = true, message = "User has been successfully created.", data = data };
-   }
-   catch (System.Exception ex)
-   {
-    return new { success = false, message = "An error occurred while creating the user: " + ex.Message };
-   }
-  }
-
-  public string Login(UserLoginViewModel userLoginViewModel)
-  {
-   try
-   {
-    var data = _userAccess.Find(userLoginViewModel.Email);
-
-    if (data == null)
+    public object Create(UserRegisterViewModel model)
     {
-     return "User not found.";
-    }
-    if (data.Password != userLoginViewModel.Password)
-    {
-     return "Password is incorrect";
+      try
+      {
+        var result = _userAccess.Find(model.Email);
+        if (result != null)
+        {
+          return new { success = false, message = "This email has been used before." };
+        }
+
+        User user = UserMapperExtensions.Map(model);
+        var data = _userAccess.Create(user);
+
+        return new { success = true, message = "User has been successfully created.", data = data };
+      }
+      catch (System.Exception ex)
+      {
+        return new { success = false, message = "An error occurred while creating the user: " + ex.Message };
+      }
     }
 
-    string key = data.Email + ":" + data.Password;
-    byte[] bytes = Encoding.UTF8.GetBytes(key);
-    string encodingKey = Convert.ToBase64String(bytes);
+    public string Login(UserLoginViewModel userLoginViewModel)
+    {
+      try
+      {
+        var data = _userAccess.Find(userLoginViewModel.Email);
 
-    return encodingKey;
-   }
-   catch (System.Exception ex)
-   {
-    return "An error occurred: " + ex.Message;
-   }
+        if (data == null)
+        {
+          return "User not found.";
+        }
+        if (data.Password != userLoginViewModel.Password)
+        {
+          return "Password is incorrect";
+        }
+        var jwtAuthenticationManager = new JwtAuthenticationManager();
+        var authResult = jwtAuthenticationManager.Authenticate(userLoginViewModel.Email, userLoginViewModel.Password);
+        if (authResult != null)
+        {
+          return authResult.token.ToString();
+        }
+        else
+        {
+          return "401-Unauthorized";
+        }
+      }
+      catch (System.Exception ex)
+      {
+        return "An error occurred: " + ex.Message;
+      }
+    }
+
   }
-
- }
 }

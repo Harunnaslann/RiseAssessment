@@ -7,11 +7,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System.Linq;
 using RiseAssessment.API.DTOs;
 using RiseAssessment.API.HelperModels;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace RiseAssessment.API.BackgroundServices
 {
