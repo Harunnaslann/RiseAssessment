@@ -1,27 +1,18 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RiseAssessment.API.Access;
 using RiseAssessment.API.BackgroundServices;
 using RiseAssessment.API.HelperModels;
 using RiseAssessment.API.Models.Context;
-using RiseAssessment.API.Security;
-using RiseAssessment.API.Store;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using RiseAssessment.API.Repository;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RiseAssessment.API
 {
@@ -45,9 +36,9 @@ namespace RiseAssessment.API
 
       services.AddHostedService<BitcoinValueUpdater>();
       services.AddScoped<CryptoAccess>();
-      services.AddScoped<CryptoStore>();
       services.AddScoped<UserAccess>();
-      services.AddScoped<UserStore>();
+      services.AddScoped<ICryptoRepository, CryptoRepository>();
+      services.AddScoped<IUserRepository, UserRepository>();
       services.Configure<ApiUrlsOptionsModel>(Configuration.GetSection("ApiUrls"));
 
       services.AddAuthentication(options =>
@@ -62,7 +53,7 @@ namespace RiseAssessment.API
           ValidateIssuer = false,
           IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Constants.JWT_SECURITY_KEY)),
           ValidateAudience = false,
-          ValidateIssuerSigningKey=true,
+          ValidateIssuerSigningKey = true,
         };
       });
 

@@ -1,24 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RiseAssessment.API.Access;
+﻿using RiseAssessment.API.Access;
 using RiseAssessment.API.Mappers;
+using RiseAssessment.API.Models.Context;
 using RiseAssessment.API.Models.Entity;
 using RiseAssessment.API.Models.ViewModel;
 using RiseAssessment.API.Security;
-using System;
-using System.Text;
 
-namespace RiseAssessment.API.Store
+namespace RiseAssessment.API.Repository
 {
-  public class UserStore
+  public class UserRepository : IUserRepository
   {
     private readonly UserAccess _userAccess;
 
-    public UserStore(UserAccess userAccess)
+    public UserRepository(UserAccess userAccess)
     {
       _userAccess = userAccess;
     }
 
-    public object Create(UserRegisterViewModel model)
+    public object CreateUser(UserRegisterViewModel model)
     {
       try
       {
@@ -69,6 +67,5 @@ namespace RiseAssessment.API.Store
         return "An error occurred: " + ex.Message;
       }
     }
-
   }
 }

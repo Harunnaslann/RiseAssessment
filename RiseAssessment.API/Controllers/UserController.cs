@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RiseAssessment.API.Models.ViewModel;
-using RiseAssessment.API.Store;
+using RiseAssessment.API.Repository;
 
 namespace RiseAssessment.API.Controllers
 {
@@ -12,12 +12,12 @@ namespace RiseAssessment.API.Controllers
   [ApiController]
   public class UserController : ControllerBase
   {
-    private readonly UserStore _userStore;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<UserController> _logger;
-    public UserController(UserStore userStore, ILogger<UserController> logger)
+    public UserController(ILogger<UserController> logger, IUserRepository userRepository)
     {
-      _userStore = userStore;
       _logger = logger;
+      _userRepository = userRepository;
     }
 
     [HttpPost("Register")]
@@ -25,7 +25,7 @@ namespace RiseAssessment.API.Controllers
     {
       try
       {
-        var data = _userStore.Create(userViewModel);
+        var data = _userRepository.CreateUser(userViewModel);
 
         return Ok(data);
       }
@@ -43,7 +43,7 @@ namespace RiseAssessment.API.Controllers
     {
       try
       {
-        var data = _userStore.Login(userLoginViewModel);
+        var data = _userRepository.Login(userLoginViewModel);
         return Ok(data);
       }
       catch (System.Exception ex)

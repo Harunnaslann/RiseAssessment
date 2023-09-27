@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RiseAssessment.API.Access;
 using RiseAssessment.API.Models.Context;
-using RiseAssessment.API.Store;
+using RiseAssessment.API.Repository;
 using System;
 using System.Linq;
 
@@ -15,12 +15,12 @@ namespace RiseAssessment.API.Controllers
   [Authorize]
   public class CryptoController : ControllerBase
   {
-    private readonly CryptoStore _cryptoStore;
+    private readonly ICryptoRepository _cryptoRepository;
     private readonly ILogger<CryptoController> _logger;
-    public CryptoController(CryptoStore cryptoStore, ILogger<CryptoController> logger)
+    public CryptoController(ILogger<CryptoController> logger, ICryptoRepository cryptoRepository)
     {
-      _cryptoStore = cryptoStore;
       _logger = logger;
+      _cryptoRepository = cryptoRepository;
     }
 
     [HttpGet("GetData")]
@@ -28,7 +28,7 @@ namespace RiseAssessment.API.Controllers
     {
       try
       {
-        var values = _cryptoStore.Get(startDate, endDate);
+        var values = _cryptoRepository.Get(startDate, endDate);
         return Ok(values);
       }
       catch (System.Exception ex)
