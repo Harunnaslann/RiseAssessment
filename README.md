@@ -19,3 +19,9 @@
 -Frontend Login ve Register ekranları geliştirildi.
 -Frontend Btc datalarını listelemek için chart.js kullanıldı ve Günlük-Haftalık-Aylık filtreleme geliştirmesi yapıldı.
 -Proje dockerize edilip tüm solution için docker-compose hazırlandı.
+
+
+UPDATE:
+Basic Authentication değiştirilerek JWT kullanıldı.
+API projesinde repository pattern gerçekleştirildi.
+UnitTest için xunit ve mock kullanıldı.
