@@ -37,7 +37,7 @@ namespace RiseAssessment.API.Repository
       }
     }
 
-    public string Login(UserLoginViewModel userLoginViewModel)
+    public object Login(UserLoginViewModel userLoginViewModel)
     {
       try
       {
@@ -45,21 +45,21 @@ namespace RiseAssessment.API.Repository
 
         if (data == null)
         {
-          return "User not found.";
+          return new { message = "User not found.", success = false };
         }
         if (data.Password != userLoginViewModel.Password)
         {
-          return "Password is incorrect";
+          return new { message = "Password is incorrect", success = false };
         }
         var jwtAuthenticationManager = new JwtAuthenticationManager();
         var authResult = jwtAuthenticationManager.Authenticate(userLoginViewModel.Email, userLoginViewModel.Password);
         if (authResult != null)
         {
-          return authResult.token.ToString();
+          return new { message = authResult.token.ToString(), success = true };
         }
         else
         {
-          return "401-Unauthorized";
+          return new { message = "401-Unauthorized", success = false };
         }
       }
       catch (System.Exception ex)

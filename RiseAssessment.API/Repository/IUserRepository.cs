@@ -5,6 +5,6 @@ namespace RiseAssessment.API.Repository
   public interface IUserRepository
   {
     object CreateUser(UserRegisterViewModel userRegisterViewModel);
-    string Login(UserLoginViewModel userLoginViewModel);
+    object Login(UserLoginViewModel userLoginViewModel);
   }
 }
